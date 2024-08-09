@@ -5,61 +5,74 @@ import com.hedrobyte.todolist.entities.Task;
 import com.hedrobyte.todolist.repositories.TaskRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 import java.util.List;
+import java.util.Optional;
 import java.util.stream.Collectors;
 
 @Service
 public class TaskService {
+
     @Autowired
     private TaskRepository taskRepository;
 
+    @Transactional(readOnly = true)
     public List<TaskDTO> getAllTasks() {
         return taskRepository.findAll().stream()
                 .map(this::convertToDTO)
                 .collect(Collectors.toList());
     }
 
-    public TaskDTO getTaskById(Long id) {
+    @Transactional(readOnly = true)
+    public Optional<TaskDTO> getTaskById(Long id) {
         return taskRepository.findById(id)
-                .map(this::convertToDTO)
-                .orElse(null);
+                .map(this::convertToDTO);
     }
 
+    @Transactional
     public TaskDTO createTask(TaskDTO taskDTO) {
         Task task = convertToEntity(taskDTO);
         task = taskRepository.save(task);
         return convertToDTO(task);
     }
 
-    public TaskDTO updateTask(Long id, TaskDTO taskDTO) {
-        if (taskRepository.existsById(id)) {
-            Task task = convertToEntity(taskDTO);
-            task.setId(id);
-            task = taskRepository.save(task);
-            return convertToDTO(task);
-        }
-        return null;
+    @Transactional
+    public Optional<TaskDTO> updateTask(Long id, TaskDTO taskDTO) {
+        return taskRepository.findById(id)
+                .map(existingTask -> updateExistingTask(existingTask, taskDTO))
+                .map(taskRepository::save)
+                .map(this::convertToDTO);
     }
 
+    @Transactional
     public void deleteTask(Long id) {
         taskRepository.deleteById(id);
     }
 
+    private Task updateExistingTask(Task existingTask, TaskDTO taskDTO) {
+        existingTask.setTitle(taskDTO.title());
+        existingTask.setDescription(taskDTO.description());
+        existingTask.setCompleted(taskDTO.completed());
+        return existingTask;
+    }
+
     private TaskDTO convertToDTO(Task task) {
-        TaskDTO taskDTO = new TaskDTO();
-        taskDTO.setId(task.getId());
-        taskDTO.setTitle(task.getTitle());
-        taskDTO.setDescription(task.getDescription());
-        taskDTO.setCompleted(task.isCompleted());
-        return taskDTO;
+        return new TaskDTO(
+                task.getId(),
+                task.getTitle(),
+                task.getDescription(),
+                task.isCompleted()
+        );
     }
 
     private Task convertToEntity(TaskDTO taskDTO) {
-        Task task = new Task();
-        task.setTitle(taskDTO.getTitle());
-        task.setDescription(taskDTO.getDescription());
-        task.setCompleted(taskDTO.isCompleted());
-        return task;
+        return new Task(
+                taskDTO.id(),
+                taskDTO.title(),
+                taskDTO.description(),
+                taskDTO.completed()
+        );
     }
 }
+
