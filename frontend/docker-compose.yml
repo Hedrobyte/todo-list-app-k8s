@@ -1,0 +1,13 @@
+version: '3.8'
+
+services:
+  angular:
+    build: .
+    container_name: angular-dev
+    volumes:
+      - .:/app
+      - /app/node_modules
+    ports:
+      - "4200:4200"
+    stdin_open: true
+    tty: true
