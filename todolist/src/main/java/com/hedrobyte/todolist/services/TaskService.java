@@ -51,8 +51,8 @@ public class TaskService {
     }
 
     private Task updateExistingTask(Task existingTask, TaskDTO taskDTO) {
-        existingTask.setTitle(taskDTO.title());
-        existingTask.setDescription(taskDTO.description());
+        existingTask.setTask(taskDTO.task());
+        existingTask.setCategory(taskDTO.category());
         existingTask.setCompleted(taskDTO.completed());
         return existingTask;
     }
@@ -60,8 +60,8 @@ public class TaskService {
     private TaskDTO convertToDTO(Task task) {
         return new TaskDTO(
                 task.getId(),
-                task.getTitle(),
-                task.getDescription(),
+                task.getTask(),
+                task.getCategory(),
                 task.isCompleted()
         );
     }
@@ -69,8 +69,8 @@ public class TaskService {
     private Task convertToEntity(TaskDTO taskDTO) {
         return new Task(
                 taskDTO.id(),
-                taskDTO.title(),
-                taskDTO.description(),
+                taskDTO.task(),
+                taskDTO.category(),
                 taskDTO.completed()
         );
     }

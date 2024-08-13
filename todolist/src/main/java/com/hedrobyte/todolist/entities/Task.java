@@ -18,18 +18,20 @@ public class Task {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
-    @NotBlank(message = "Title is mandatory")
-    private String title;
-    private String description;
+    @NotBlank(message = "The task field is required.")
+    private String task;
 
-    @NotNull(message = "Completed status is mandatory")
+    @NotBlank(message = "The category field is required.")
+    private String category;
+
+    @NotNull(message = "The completion status field is required.")
     @Column(nullable = false)
     private boolean completed;
 
-    public Task(Long id, String title, String description, boolean completed) {
+    public Task(Long id, String task, String category, boolean completed) {
         this.id = id;
-        this.title = title;
-        this.description = description;
+        this.task = task;
+        this.category = category;
         this.completed = completed;
     }
 }
