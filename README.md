@@ -1,4 +1,4 @@
-## GCC270 - Trabalho Final: TODO List
+## GCC270 - DevOps na Prática - Trabalho Final: TODO List
 
 Este é o trabalho final da disciplina GCC270 - DevOps na Prática oferecida pela Universidade Federal de Lavras (UFLA). O projeto consiste na criação de uma aplicação de gerenciamento de tarefas (TODO List) utilizando Angular para o frontend, Spring Boot (Java 21) para o backend e PostgreSQL como banco de dados. Além disso, o projeto inclui Docker para a criação de imagens e contêineres, e Kubernetes para orquestração.
 
